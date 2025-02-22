@@ -1,0 +1,298 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ProjectType {
+  Web
+  MobileApp 
+}
+
+enum ProjectStatus {
+  Active
+  Inactive
+}
+
+enum PaymentMethodType {
+  Cash
+  Card
+}
+
+enum OrderStatus {
+  JustOrdered
+  Reviewed
+  OutForDelivery
+  Delivered
+  Canceled
+  Refused
+}
+
+model Admin {
+  id        Int @id @default(autoincrement())
+  email     String @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@map("admins")
+}
+
+model Page {
+  id              Int @id @default(autoincrement())
+  name            String  @unique
+  description     String? @db.Text
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now()) @updatedAt
+  sections        Section[]
+  @@map("pages")
+}
+
+model Section {
+  id            Int        @id @default(autoincrement())
+  pageId        Int
+  page          Page       @relation(fields: [pageId], references: [id])
+  name          String
+  translations  SectionTranslation[]
+
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @default(now()) @updatedAt
+
+  @@map("sections")
+}
+
+model SectionTranslation {
+  id         Int        @id @default(autoincrement())
+  sectionId  Int
+  section    Section    @relation(fields: [sectionId], references: [id])
+  locale     String     
+  title      String     
+  additionalTitle String @default("")
+  content    String    
+  list       Json?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @default(now()) @updatedAt
+
+  @@unique([sectionId, locale]) 
+  @@map("section_translations")
+}
+
+
+model Settings {
+  id        Int @id @default(autoincrement())
+  key       String
+  value     String
+  locale    String @default("en")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@unique([key, locale])
+
+  @@map("settings")
+}
+
+model User {
+  id        Int @id @default(autoincrement())
+  email     String @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  orders       Order[]
+  loginHistory LoginHistory[]
+  activities   UserActivity[]
+
+  @@map("users")
+}
+
+model LoginHistory {
+  id        Int @id @default(autoincrement())
+  userId    Int
+  user      User @relation(fields: [userId], references: [id])
+  ip        String @default("")
+  device    String @default("")
+  createdAt DateTime @default(now())
+
+  @@map("login_histories")
+}
+
+model Product {
+  id          Int @id @default(autoincrement())
+  name        String
+  description String?
+  price       Int
+  image       String?
+
+  sale        ProductSale[]
+  orderItems      OrderItem[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+
+  @@map("products")
+}
+
+model Partner {
+  id          Int @id @default(autoincrement())
+  name        String
+  description String @default("")
+  image       String @default("/bg.webp")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+
+  @@map("partners")
+}
+
+model Review {
+  id          Int @id @default(autoincrement())
+  name        String
+  description String @default("")
+  rating      Int    @default(5)
+  image       String @default("/bg.webp")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+
+  @@map("reviews")
+}
+
+model UserActivity {
+  id        Int      @id @default(autoincrement())
+  userId    Int?     
+  user      User?    @relation(fields: [userId], references: [id])
+  activity  String   
+  createdAt DateTime @default(now())
+
+  @@map("user_activities")
+}
+
+model ProductSearch {
+  id        Int      @id @default(autoincrement())
+  query     String   
+  count     Int      
+  createdAt DateTime @default(now())
+
+  @@map("product_searches")
+}
+
+model PageVisit {
+  id        Int      @id @default(autoincrement())
+  pageUrl   String
+  userId    Int?
+  createdAt DateTime @default(now())
+
+  @@map("page_visits")
+}
+
+model ProductSale {
+  id        Int      @id @default(autoincrement())
+  productId Int    
+  product   Product  @relation(fields: [productId], references: [id])  
+  quantity  Int      
+  createdAt DateTime @default(now())
+
+  @@map("product_sales")
+}
+
+model Blog {
+  id          Int @id @default(autoincrement())
+  title       String
+  description String
+  content     String @db.Text
+  tags        String @default("")
+  keywords    String @default("")
+  image       String @default("/bg.webp")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+
+  @@map("blogs")
+}
+
+model Employee {
+  id          Int      @id @default(autoincrement())
+  name        String
+  email       String   @unique
+  role        String   
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  performanceLogs PerformanceLog[]
+  tasks           Task[]
+}
+
+model PerformanceLog {
+  id          Int      @id @default(autoincrement())
+  employeeId  Int
+  employee    Employee @relation(fields: [employeeId], references: [id])
+  activity    String
+  duration    Int
+  rating      Int @default(0)
+  responseTime Int @default(0)
+  createdAt   DateTime @default(now())
+
+  @@map("performance_logs")
+}
+
+model Task {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  assignedTo  Int
+  employee    Employee @relation(fields: [assignedTo], references: [id])
+  status      String   @default("Pending")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("tasks")
+}
+
+model Suggestion {
+  id          Int      @id @default(autoincrement())
+  name        String
+  email       String
+  message     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+
+  @@map("suggestions")
+}
+
+model Order {
+  id           Int  @id @default(autoincrement())
+  userId       Int
+
+  paymentMethod PaymentMethodType @default(Cash)
+  status        OrderStatus       @default(JustOrdered)
+  statusNumber  Int               @default(1) @db.SmallInt
+
+  discountValue Int @default(0) @db.SmallInt
+  deliveryValue Int @default(0) @db.SmallInt
+  subTotal      Int @default(0)
+  total         Int
+
+  orderedAt     DateTime @default(now()) @db.Timestamp()
+  updatedAt     DateTime  @default(now()) @db.Timestamp()
+  deliveredAt   DateTime? @db.Timestamp()
+  deletedAt     DateTime? @db.Timestamp()
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  items      OrderItem[]
+}
+
+model OrderItem {
+  id         Int @id @default(autoincrement())
+  orderId    Int
+  productId  Int
+
+  quantity   Int @default(1) @db.SmallInt
+  unitPrice  Int
+  totalPrice Int
+
+  order Order    @relation(fields: [orderId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  product  Product @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
