@@ -3,7 +3,7 @@
 import bcrypt from "bcrypt";
 import db from "@/lib/prisma";
 
-import { LoginSchema, UserSchema } from "@/lib/schema";
+import { LoginSchema, RegisterSchema, UserSchema } from "@/lib/schema";
 import { OrderStatus, Prisma, User } from "@prisma/client";
 
 import { actionResponse, responseCodes } from "@/lib/api";
@@ -88,6 +88,27 @@ export async function userSignIn(data: z.infer<typeof LoginSchema>) {
     return response;
   } catch (error) {
     return;
+  }
+}
+
+export async function regsiterAction(data: z.infer<typeof RegisterSchema>) {
+  try {
+    const isEmailExists = await db.user.findUnique({
+      where: { email: data.email }
+    });
+
+    if (isEmailExists) return actionResponse(400, "Email already exists");
+
+    await db.user.create({
+      data: {
+        ...data,
+        password: bcrypt.hashSync(data.password, 10)
+      }
+    });
+
+    return actionResponse(200, "User registered successfully");
+  } catch (error) {
+    actionResponse(200, "Failed to register User try again later.");
   }
 }
 
