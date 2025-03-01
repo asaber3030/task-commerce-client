@@ -12,7 +12,8 @@ import {
   ShoppingCart,
   LockIcon,
   User2,
-  Building2
+  Building2,
+  ListIcon
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -47,6 +48,11 @@ export const AdminSidebar = () => {
       title: "Products",
       icon: ShoppingCart,
       path: adminRoutes.products.root
+    },
+    {
+      title: "Categories",
+      icon: ListIcon,
+      path: adminRoutes.categories.root
     },
     {
       title: "Admins",

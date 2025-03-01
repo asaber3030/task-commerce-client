@@ -80,12 +80,14 @@ export const ProductSchema = {
   Create: z.object({
     name: z.string().min(1, { message: "Name is required" }),
     description: z.string().min(1, { message: "Description is required" }),
-    price: z.number().min(1, { message: "Price is required" })
+    price: z.number().min(1, { message: "Price is required" }),
+    categoryId: z.number()
   }),
   Update: z.object({
     name: z.string().min(1, { message: "Name is required" }).optional(),
     description: z.string().min(1, { message: "Description is required" }).optional(),
-    price: z.number().min(1, { message: "Price is required" }).optional()
+    price: z.number().min(1, { message: "Price is required" }).optional(),
+    categoryId: z.number().optional()
   })
 };
 
@@ -138,6 +140,17 @@ export const ReviewSchema = {
 };
 
 export const PartnerSchema = {
+  Create: z.object({
+    name: z.string().min(1, { message: "Name is required" }),
+    description: z.string().min(1, { message: "Description is required" })
+  }),
+  Update: z.object({
+    name: z.string().min(1, { message: "Name is required" }).optional(),
+    description: z.string().min(1, { message: "Description is required" }).optional()
+  })
+};
+
+export const CategorySchema = {
   Create: z.object({
     name: z.string().min(1, { message: "Name is required" }),
     description: z.string().min(1, { message: "Description is required" })

@@ -4,19 +4,18 @@ import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { updateProductAction } from "@/server/products";
 import { showResponseMessage } from "@/lib/utils";
+import { updateUserAction } from "@/server/users";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 import { LoadingButton } from "@/components/common/loading-button";
-import { ProductSchema } from "@/lib/schema";
 import { InputField } from "@/components/common/input";
-import { FileField } from "@/components/common/file-field";
-import { Category, Product } from "@prisma/client";
+import { CategorySchema, UserSchema } from "@/lib/schema";
 import { Button } from "@/components/ui/button";
-import { Edit, Plus } from "lucide-react";
+import { Edit } from "lucide-react";
 import { Form } from "@/components/ui/form";
+import { Category, User } from "@prisma/client";
 import {
   Dialog,
   DialogClose,
@@ -25,32 +24,26 @@ import {
   DialogTitle,
   DialogTrigger
 } from "@/components/ui/dialog";
-import { SelectField } from "@/components/common/select-field";
-import { SelectItem } from "@/components/ui/select";
+import { updateCategoryAction } from "@/server/categories";
 
-export const UpdateProductModal = ({
-  product,
-  categories
-}: {
-  categories: Category[];
-  product: Product;
-}) => {
+type Props = {
+  category: Category;
+};
+
+export const UpdateCategoryModal = ({ category }: Props) => {
   const [open, setOpen] = useState(false);
-  const [file, setFile] = useState<File | null>(null);
 
   const form = useForm({
-    resolver: zodResolver(ProductSchema.Update),
+    resolver: zodResolver(CategorySchema.Update),
     defaultValues: {
-      name: product.name || "",
-      description: product.description || "",
-      price: product.price || 0,
-      categoryId: product.categoryId
+      name: category.name,
+      description: category.description ?? ""
     }
   });
 
   const mutation = useMutation({
-    mutationFn: (data: z.infer<typeof ProductSchema.Update>) =>
-      updateProductAction(product.id, data, file),
+    mutationFn: (data: z.infer<typeof CategorySchema.Update>) =>
+      updateCategoryAction(category.id, data),
     onSuccess: (data) =>
       showResponseMessage(data, () => {
         setOpen(false);
@@ -68,40 +61,20 @@ export const UpdateProductModal = ({
       </DialogTrigger>
       <DialogContent className='min-w-[500px]'>
         <DialogHeader>
-          <DialogTitle>Update Product</DialogTitle>
+          <DialogTitle>
+            Update Category - <b>{category.name}</b>
+          </DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className='space-y-4'>
-            <FileField onChange={setFile} label='Image' accept='image/*' />
             <InputField placeholder='Name' control={form.control} name='name' label='Name' />
             <InputField
-              placeholder='Price'
-              control={form.control}
-              name='price'
-              label='Price'
-              valuseAsNumber
-            />
-            <InputField
-              isTextarea
               placeholder='Description'
               control={form.control}
               name='description'
               label='Description'
             />
-            <SelectField
-              defaultValue={product.categoryId.toString()}
-              control={form.control}
-              name='categoryId'
-              label='category'
-              valueAsNumber
-            >
-              {categories.map((category) => (
-                <SelectItem key={`c-${category.id}`} value={category.id.toString()}>
-                  {category.name}
-                </SelectItem>
-              ))}
-            </SelectField>
             <div className='flex gap-2'>
               <LoadingButton loading={mutation.isPending} type='submit'>
                 Save

@@ -20,6 +20,12 @@ export const adminRoutes = {
     update: (id: number) => `/admin/users/${id}/update`,
     view: (id: number) => `/admin/users/${id}`
   },
+  categories: {
+    root: "/admin/categories",
+    create: "/admin/categories/create",
+    update: (id: number) => `/admin/categories/${id}/update`,
+    view: (id: number) => `/admin/categories/${id}`
+  },
   performanceLogs: {
     root: "/admin/performance-logs",
     create: "/admin/performance-logs/create",

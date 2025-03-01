@@ -3,7 +3,7 @@
 import db from "@/lib/prisma";
 
 import { ProductSchema } from "@/lib/schema";
-import { Product } from "@prisma/client";
+import { Category, Prisma, Product } from "@prisma/client";
 
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { actionResponse } from "@/lib/api";
@@ -33,10 +33,27 @@ export async function getProduct(id: number) {
   }
 }
 
-export async function getProducts(search?: string): Promise<Product[]> {
+export async function getProducts(
+  search?: string,
+  categoryId?: number
+): Promise<(Product & { category: Category })[]> {
   try {
+    const where: Prisma.ProductWhereInput = {};
+    if (search) {
+      where.OR = [
+        { name: { contains: search, mode: "insensitive" } },
+        { description: { contains: search, mode: "insensitive" } }
+      ];
+    }
+    if (categoryId) {
+      where.categoryId = categoryId;
+    }
     const products = await db.product.findMany({
-      orderBy: { id: "desc" }
+      orderBy: { id: "desc" },
+      where,
+      include: {
+        category: true
+      }
     });
 
     return products;

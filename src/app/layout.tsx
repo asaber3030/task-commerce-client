@@ -39,10 +39,7 @@ export default async function RootLayout({ children }: Props) {
         <StoreProvider>
           <ReactQueryClientProvider>
             <ToastContainer />
-            <LanguageProvider language={language}>
-              {children}
-              <Analytics />
-            </LanguageProvider>
+            <LanguageProvider language={language}>{children}</LanguageProvider>
           </ReactQueryClientProvider>
         </StoreProvider>
       </body>

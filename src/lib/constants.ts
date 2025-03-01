@@ -2,7 +2,6 @@ import { ProjectType } from "@prisma/client";
 
 export const AvailableLanguages = ["en", "ar"];
 export const LANGUAGE_COOKIE = "language";
-
 export const LOGO_PATH = "/bg.webp";
 
 export const socialMedia = {

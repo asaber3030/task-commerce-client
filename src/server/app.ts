@@ -6,6 +6,7 @@ import { SettingsSchema } from "@/lib/schema";
 
 import { actionResponse } from "@/lib/api";
 import { z } from "zod";
+import { QuestionSchema } from "@/app/(app)/filter/_filter";
 
 export async function getSettings() {
   return await db.settings.findMany();
@@ -130,4 +131,15 @@ export async function updateFooterSettingsAction(data: z.infer<typeof SettingsSc
   } catch (error) {
     return actionResponse(200, "Failed to update");
   }
+}
+
+export async function findProductsBasedOnQuestions(d: z.infer<typeof QuestionSchema>) {
+  return await db.product.findMany({
+    where: {
+      name: { contains: d.name },
+      description: { contains: d.description },
+      price: { lte: d.price },
+      categoryId: d.category
+    }
+  });
 }
