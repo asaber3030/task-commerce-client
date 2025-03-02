@@ -1,10 +1,11 @@
 "use client";
 
-import { BoxIcon } from "lucide-react";
+import { ArrowRight, BoxIcon } from "lucide-react";
 import Image from "next/image";
 
 import { useLanguage } from "@/hooks/use-language";
 import { DefaultSectionProps, SectionListItem } from "@/types/app";
+import { LinkBtn } from "@/components/common/link-button";
 
 export function HomeSplitSection({ section }: DefaultSectionProps) {
   const language = useLanguage();
@@ -44,6 +45,10 @@ export function HomeSplitSection({ section }: DefaultSectionProps) {
               </div>
             ))}
           </div>
+
+          <LinkBtn href='/filter' icon={ArrowRight} variant='outline' linkClassName='mt-4 block'>
+            Filter
+          </LinkBtn>
         </div>
       </div>
     </section>

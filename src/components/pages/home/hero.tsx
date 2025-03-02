@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/hooks/use-language";
 import { DefaultSectionProps } from "@/types/app";
 
+import Image from "next/image";
+
 export const HomeHeroSection = ({ section }: DefaultSectionProps) => {
   const language = useLanguage();
   const translation = section.translations.find((t) => t.locale === language);
@@ -12,10 +14,16 @@ export const HomeHeroSection = ({ section }: DefaultSectionProps) => {
   if (!translation) return null;
 
   return (
-    <div className='relative min-h-screen w-full flex flex-col items-center justify-center bg-gray-700'>
+    <div className='relative min-h-screen w-full flex flex-col items-center justify-center bg-gray-700 relative'>
       <div>
         {/* Background overlay to ensure text readability */}
-        <div className='absolute inset-0 bg-black/20' />
+        <Image
+          src='/bg.webp'
+          alt='sadd'
+          width={1000}
+          height={1000}
+          className='w-full h-full absolute left-0 top-0'
+        />
 
         {/* Content container */}
         <div className='relative flex flex-col items-center justify-center min-h-[600px] text-center px-4 sm:px-6 lg:px-8'>
