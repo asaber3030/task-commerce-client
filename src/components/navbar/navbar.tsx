@@ -17,9 +17,7 @@ export const Navbar = () => {
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
         <div className='flex flex-wrap items-center justify-between h-16'>
           {/* Logo */}
-          <div className='flex-shrink-0'>
-            <Logo />
-          </div>
+          <div className='flex-shrink-0'>Logo</div>
 
           {/* Navigation Links */}
           <div className='hidden xl:flex items-center gap-8'>
@@ -30,7 +28,7 @@ export const Navbar = () => {
               Products
             </Link>
 
-            <Link href='/about' className='text-gray-700 hover:text-gray-900'>
+            <Link href='' className='text-gray-700 hover:text-gray-900'>
               About Us
             </Link>
             <Link href='/contact' className='text-gray-700 hover:text-gray-900'>

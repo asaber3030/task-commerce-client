@@ -1,17 +1,6 @@
-import { ProjectType } from "@prisma/client";
-
 export const AvailableLanguages = ["en", "ar"];
 export const LANGUAGE_COOKIE = "language";
 export const LOGO_PATH = "/bg.webp";
-
-export const socialMedia = {
-  facebook: "https://www.facebook.com/profile.php?id=61566599342393",
-  linkedin: "https://www.linkedin.com/company/corevine/",
-  instagram: "https://www.instagram.com/corevinetechnology/?utm_source=ig_web_button_share_sheet",
-  whatsapp: "https://wa.me/966112215555",
-  mobile: "966112215555",
-  location: "https://maps.app.goo.gl/P3vX2bB4izu6CTt7A"
-};
 
 export const API_URL = process.env.API_URL;
 export const LOGIN_URL = `${API_URL}/admins/login`;
